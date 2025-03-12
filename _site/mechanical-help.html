@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang='en'><header
+    class="z-10 sticky justify-items-center w-full top-0 grid grid-cols-5 bg-white justify-center p-4 drop-shadow"
+>
+    <div class="col-span-2 flex gap-x-12 mt-3 justify-self-end" id="link-bar-1">
+        <a
+            href="/personal_flocker_frontend/dream-car"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Dream Car</a
+        >
+        <a
+            href="/personal_flocker_frontend/recommended"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Recommended Cars</a
+        >
+        <a
+            href="/personal_flocker_frontend/allPosts"
+            class="text-sm/6 font-semibold text-gray-900"
+            >All Posts</a
+        >
+        <a
+            href="/personal_flocker_frontend/make_post"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Make Post</a
+        >
+        
+            
+    </div>
+    <div class="p-2" id="home-btn">
+        <a href="/personal_flocker_frontend/" class="text-sm/6 font-bold text-rose-600"
+            ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                width="30"
+                height="30"
+                viewBox="0,0,256,256"
+            >
+                <g
+                    fill="#dc2626"
+                    fill-rule="nonzero"
+                    stroke="none"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="miter"
+                    stroke-miterlimit="10"
+                    stroke-dasharray=""
+                    stroke-dashoffset="0"
+                    font-family="none"
+                    font-weight="none"
+                    font-size="none"
+                    text-anchor="none"
+                    style="mix-blend-mode: normal"
+                >
+                    <g transform="scale(10.66667,10.66667)">
+                        <path
+                            d="M12,2c-0.26712,0.00003 -0.52312,0.10694 -0.71094,0.29688l-10.08594,8.80078c-0.12774,0.09426 -0.20313,0.24359 -0.20312,0.40234c0,0.27614 0.22386,0.5 0.5,0.5h2.5v8c0,0.552 0.448,1 1,1h4c0.552,0 1,-0.448 1,-1v-6h4v6c0,0.552 0.448,1 1,1h4c0.552,0 1,-0.448 1,-1v-8h2.5c0.27614,0 0.5,-0.22386 0.5,-0.5c0.00001,-0.15876 -0.07538,-0.30808 -0.20312,-0.40234l-10.08008,-8.79492c-0.00194,-0.00196 -0.0039,-0.00391 -0.00586,-0.00586c-0.18782,-0.18994 -0.44382,-0.29684 -0.71094,-0.29687z"
+                        ></path>
+                    </g>
+                </g></svg
+        ></a>
+    </div>
+    <div
+        class="col-span-2 flex gap-x-12 mt-3 justify-self-start"
+        id="link-bar-2"
+    >
+        <a
+            href="/personal_flocker_frontend/electric"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Electric</a
+        >
+        <a
+            href="/personal_flocker_frontend/gas"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Gas</a
+        >
+        <a
+            href="/personal_flocker_frontend/garage"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Garage</a
+        >
+        
+           <!-- Help dropdown (hover version) -->
+            <div class="relative group">
+                <a
+                    href="/personal_flocker_frontend/help"
+                    class="text-sm/6 font-semibold text-gray-900"
+                    id="help-button"
+                >Help</a>
+                <div
+                    id="help-dropdown"
+                    class="dropdown-content absolute hidden group-hover:block bg-white shadow-md rounded-lg mt-2 w-40 text-sm font-semibold text-gray-900"
+                >
+                    <a href="/personal_flocker_frontend/terms" class="block px-4 py-2">Terms of Service</a>
+                    <a href="/personal_flocker_frontend/mechanicsTips" class="block px-4 py-2">Car Issues Post Page</a>
+                    <a href="/personal_flocker_frontend/terms" class="block px-4 py-2">Terms of Service</a>
+                </div>
+            </div>
+
+        <a
+            id="signup-login"
+            href="/personal_flocker_frontend/noauth"
+            class="hover:drop-shadow-xl z-10 right-6 absolute text-rose-600 font-extrabold tracking-tight"
+            >Sign Up | Login</a
+        >
+        <a
+            hidden
+            id="profile"
+            href="/personal_flocker_frontend/profile"
+            class="hover:drop-shadow-xl z-10 right-6 absolute text-rose-600 font-extrabold tracking-tight"
+            >Profile</a
+        >
+    </div>
+</header>
+
+<script type="module">
+    import {
+        pythonURI,
+        fetchOptions,
+    } from "/personal_flocker_frontend/assets/js/api/config.js";
+
+    const loginLink = document.getElementById("signup-login");
+    const profileLink = document.getElementById("profile");
+
+    document.addEventListener("DOMContentLoaded", () => {
+        getCredentials() // Call the function to get credentials
+            .then((data) => {
+                if (data) {
+                    //IF DATA THEN THE USER IS AUTHENTICATED/LOGGED IN
+                    console.log("LOGGED IN");
+                    loginLink.hidden = true;
+                    profileLink.hidden = false;
+                } else {
+                    //USER IS NOT AUTHENTICATED/LOGGED IN
+                }
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Error fetching credentials: ", err);
+                // Handle any errors that occurred during getCredentials
+            });
+    });
+    function getCredentials() {
+        const URL = pythonURI + "/api/user";
+        return fetch(URL, fetchOptions)
+            .then((response) => {
+                // API response handler
+                if (response.status !== 200) {
+                    console.error("HTTP status code: " + response.status);
+                    return null; // prepares to stop the chain by returning null.
+                }
+                return response.json(); // plans to continue the chain with the data.
+            })
+            .then((data) => {
+                // Data handler from the previous promise
+                if (data === null) return null; // stops the chain, returns null.
+                return data; // returns data to caller
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Fetch error: ", err);
+                return null;
+            });
+    }
+</script>
+<body>
+        <main class="page-content" aria-label="Content">
+            <div class="wrapper bg-white"><div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+    <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Manage Mechanics Tips</h2>
+  </div>
+
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <!-- Add Mechanics Tip Form -->
+    <form class="space-y-4 mt-4" id="add-tip-form">
+      <div>
+        <label for="make" class="block text-sm/6 font-medium text-gray-900">Make</label>
+        <input type="text" id="make" placeholder="Enter Make" required="" class="block w-full rounded-md bg-white px-3 py-1.5 text-gray-900" />
+      </div>
+      <div>
+        <label for="model" class="block text-sm/6 font-medium text-gray-900">Model</label>
+        <input type="text" id="model" placeholder="Enter Model" required="" class="block w-full rounded-md bg-white px-3 py-1.5 text-gray-900" />
+      </div>
+      <div>
+        <label for="year" class="block text-sm/6 font-medium text-gray-900">Year</label>
+        <input type="number" id="year" placeholder="Enter Year" class="block w-full rounded-md bg-white px-3 py-1.5 text-gray-900" />
+      </div>
+      <div>
+        <label for="issue" class="block text-sm/6 font-medium text-gray-900">Issue</label>
+        <textarea id="issue" placeholder="Describe Issue" required="" class="block w-full rounded-md bg-white px-3 py-1.5 text-gray-900"></textarea>
+      </div>
+      <div>
+        <label for="tip" class="block text-sm/6 font-medium text-gray-900">Tip</label>
+        <textarea id="tip" placeholder="Provide Repair Tip" required="" class="block w-full rounded-md bg-white px-3 py-1.5 text-gray-900"></textarea>
+      </div>
+      <div>
+        <button type="submit" class="w-full bg-red-600 text-white py-1.5 rounded-md">Add Tip</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="mt-10">
+    <h3 class="text-lg font-medium text-gray-900">All Mechanics Tips</h3>
+    <ul id="tips-list" class="mt-4 space-y-2">
+      <!-- Tips will be dynamically added here -->
+    </ul>
+  </div>
+</div>
+
+<!-- Link to External JavaScript File -->
+<script type="module">
+import { pythonURI, fetchOptions } from '/personal_flocker_frontend/assets/js/api/config.js';
+
+// Function to add a new tip
+document.getElementById('add-tip-form').addEventListener('submit', async function (event) {
+  event.preventDefault();
+
+  // Collect form values
+  const make = document.getElementById('make').value;
+  const model = document.getElementById('model').value;
+  const year = document.getElementById('year').value;
+  const issue = document.getElementById('issue').value;
+  const tip = document.getElementById('tip').value;
+
+  // Prepare request data
+  const requestData = {
+    make: make,
+    model: model,
+    year: year || null, // Optional field
+    issue: issue,
+    tip: tip
+  };
+
+  try {
+    // Make a POST request to the API
+    const response = await fetch(`${pythonURI}/api/mechanicsTips`, {
+      method: "POST",
+      cache: "no-cache",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`, // Add token if needed
+      },
+      body: JSON.stringify(requestData), // Attach the form data
+    });
+
+    // Handle the response
+    if (response.ok) {
+      const result = await response.json();
+      alert('Mechanics Tip added successfully!');
+      document.getElementById('add-tip-form').reset(); // Reset form on success
+      console.log(result); // Log result for debugging
+      fetchTips(); // Refresh tips list
+    } else {
+      const error = await response.json();
+      alert(`Error: ${error.message || 'Failed to add tip'}`);
+      console.error(error);
+    }
+  } catch (err) {
+    alert('An error occurred while processing your request. Please try again.');
+    console.error(err);
+  }
+});
+
+// Function to fetch and display tips
+async function fetchTips() {
+  try {
+    const response = await fetch(`${pythonURI}/api/mechanicsTips`, {
+      method: "GET",
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "default", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "include", // include, same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        "X-Origin": "client", // New custom header to identify source
+    },
+    });
+
+    if (response.ok) {
+      const tips = await response.json();
+      const tipsList = document.getElementById('tips-list');
+      tipsList.innerHTML = ''; // Clear the list before appending
+
+        console.log(tips)
+
+      // Populate the list with tips
+      tips.forEach(tip => {
+        const li = document.createElement('li');
+        li.className = 'p-4 bg-gray-100 rounded-md shadow-sm';
+        li.innerHTML = `
+          <strong>Make:</strong> ${tip.make}<br>
+          <strong>Model:</strong> ${tip.model}<br>
+          <strong>Year:</strong> ${tip.year || 'N/A'}<br>
+          <strong>Issue:</strong> ${tip.issue}<br>
+          <strong>Tip:</strong> ${tip.tip}
+        `;
+        tipsList.appendChild(li);
+      });
+    } else {
+      const error = await response.json();
+      console.error(`Error fetching tips: ${error.message}`);
+    }
+  } catch (err) {
+    console.error('An error occurred while fetching tips:', err);
+  }
+}
+
+// Fetch tips on page load
+document.addEventListener('DOMContentLoaded', fetchTips);
+
+</script>
+
+
+
+<script type="module">
+    import {
+        pythonURI,
+        fetchOptions,
+    } from "/personal_flocker_frontend/assets/js/api/config.js";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        getCredentials() // Call the function to get credentials
+            .then((data) => {
+                if (data) {
+                    //IF DATA THEN THE USER IS AUTHENTICATED/LOGGED IN
+                    console.log("LOGGED IN");
+                } else {
+                    //USER IS NOT AUTHENTICATED/LOGGED IN
+                    if (!window.location.href.includes("noauth")) {
+                        window.location.href = "/personal_flocker_frontend/noauth";
+                    }
+                }
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Error fetching credentials: ", err);
+                // Handle any errors that occurred during getCredentials
+            });
+    });
+
+    function getCredentials() {
+        const URL = pythonURI + "/api/user";
+        return fetch(URL, fetchOptions)
+            .then((response) => {
+                // API response handler
+                if (response.status !== 200) {
+                    console.error("HTTP status code: " + response.status);
+                    return null; // prepares to stop the chain by returning null.
+                }
+                return response.json(); // plans to continue the chain with the data.
+            })
+            .then((data) => {
+                // Data handler from the previous promise
+                if (data === null) return null; // stops the chain, returns null.
+                console.log(data); // logs data with should contain uid, name, etc.
+                return data; // returns data to caller
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Fetch error: ", err);
+                return null;
+            });
+    }
+</script>
+</div>
+        </main>
+    </body>
+    <script src="https://cdn.tailwindcss.com"></script>
+</html>
+
+<script>
+    // JavaScript to handle fade-in effect on scroll
+    const fadeInElements = document.querySelectorAll(".fade-in");
+
+    const handleScroll = () => {
+        fadeInElements.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) {
+                el.classList.add("visible");
+            } else {
+                el.classList.remove("visible");
+            }
+        });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("load", handleScroll); // Trigger on page load
+</script>

@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang='en'><header
+    class="z-10 sticky justify-items-center w-full top-0 grid grid-cols-5 bg-white justify-center p-4 drop-shadow"
+>
+    <div class="col-span-2 flex gap-x-12 mt-3 justify-self-end" id="link-bar-1">
+        <a
+            href="/personal_flocker_frontend/dream-car"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Dream Car</a
+        >
+        <a
+            href="/personal_flocker_frontend/recommended"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Recommended Cars</a
+        >
+        <a
+            href="/personal_flocker_frontend/allPosts"
+            class="text-sm/6 font-semibold text-gray-900"
+            >All Posts</a
+        >
+        <a
+            href="/personal_flocker_frontend/make_post"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Make Post</a
+        >
+        
+            
+    </div>
+    <div class="p-2" id="home-btn">
+        <a href="/personal_flocker_frontend/" class="text-sm/6 font-bold text-rose-600"
+            ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                width="30"
+                height="30"
+                viewBox="0,0,256,256"
+            >
+                <g
+                    fill="#dc2626"
+                    fill-rule="nonzero"
+                    stroke="none"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="miter"
+                    stroke-miterlimit="10"
+                    stroke-dasharray=""
+                    stroke-dashoffset="0"
+                    font-family="none"
+                    font-weight="none"
+                    font-size="none"
+                    text-anchor="none"
+                    style="mix-blend-mode: normal"
+                >
+                    <g transform="scale(10.66667,10.66667)">
+                        <path
+                            d="M12,2c-0.26712,0.00003 -0.52312,0.10694 -0.71094,0.29688l-10.08594,8.80078c-0.12774,0.09426 -0.20313,0.24359 -0.20312,0.40234c0,0.27614 0.22386,0.5 0.5,0.5h2.5v8c0,0.552 0.448,1 1,1h4c0.552,0 1,-0.448 1,-1v-6h4v6c0,0.552 0.448,1 1,1h4c0.552,0 1,-0.448 1,-1v-8h2.5c0.27614,0 0.5,-0.22386 0.5,-0.5c0.00001,-0.15876 -0.07538,-0.30808 -0.20312,-0.40234l-10.08008,-8.79492c-0.00194,-0.00196 -0.0039,-0.00391 -0.00586,-0.00586c-0.18782,-0.18994 -0.44382,-0.29684 -0.71094,-0.29687z"
+                        ></path>
+                    </g>
+                </g></svg
+        ></a>
+    </div>
+    <div
+        class="col-span-2 flex gap-x-12 mt-3 justify-self-start"
+        id="link-bar-2"
+    >
+        <a
+            href="/personal_flocker_frontend/electric"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Electric</a
+        >
+        <a
+            href="/personal_flocker_frontend/gas"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Gas</a
+        >
+        <a
+            href="/personal_flocker_frontend/garage"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Garage</a
+        >
+        
+           <!-- Help dropdown (hover version) -->
+            <div class="relative group">
+                <a
+                    href="/personal_flocker_frontend/help"
+                    class="text-sm/6 font-semibold text-gray-900"
+                    id="help-button"
+                >Help</a>
+                <div
+                    id="help-dropdown"
+                    class="dropdown-content absolute hidden group-hover:block bg-white shadow-md rounded-lg mt-2 w-40 text-sm font-semibold text-gray-900"
+                >
+                    <a href="/personal_flocker_frontend/terms" class="block px-4 py-2">Terms of Service</a>
+                    <a href="/personal_flocker_frontend/mechanicsTips" class="block px-4 py-2">Car Issues Post Page</a>
+                    <a href="/personal_flocker_frontend/terms" class="block px-4 py-2">Terms of Service</a>
+                </div>
+            </div>
+
+        <a
+            id="signup-login"
+            href="/personal_flocker_frontend/noauth"
+            class="hover:drop-shadow-xl z-10 right-6 absolute text-rose-600 font-extrabold tracking-tight"
+            >Sign Up | Login</a
+        >
+        <a
+            hidden
+            id="profile"
+            href="/personal_flocker_frontend/profile"
+            class="hover:drop-shadow-xl z-10 right-6 absolute text-rose-600 font-extrabold tracking-tight"
+            >Profile</a
+        >
+    </div>
+</header>
+
+<script type="module">
+    import {
+        pythonURI,
+        fetchOptions,
+    } from "/personal_flocker_frontend/assets/js/api/config.js";
+
+    const loginLink = document.getElementById("signup-login");
+    const profileLink = document.getElementById("profile");
+
+    document.addEventListener("DOMContentLoaded", () => {
+        getCredentials() // Call the function to get credentials
+            .then((data) => {
+                if (data) {
+                    //IF DATA THEN THE USER IS AUTHENTICATED/LOGGED IN
+                    console.log("LOGGED IN");
+                    loginLink.hidden = true;
+                    profileLink.hidden = false;
+                } else {
+                    //USER IS NOT AUTHENTICATED/LOGGED IN
+                }
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Error fetching credentials: ", err);
+                // Handle any errors that occurred during getCredentials
+            });
+    });
+    function getCredentials() {
+        const URL = pythonURI + "/api/user";
+        return fetch(URL, fetchOptions)
+            .then((response) => {
+                // API response handler
+                if (response.status !== 200) {
+                    console.error("HTTP status code: " + response.status);
+                    return null; // prepares to stop the chain by returning null.
+                }
+                return response.json(); // plans to continue the chain with the data.
+            })
+            .then((data) => {
+                // Data handler from the previous promise
+                if (data === null) return null; // stops the chain, returns null.
+                return data; // returns data to caller
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Fetch error: ", err);
+                return null;
+            });
+    }
+</script>
+<body>
+        <main class="page-content" aria-label="Content">
+            <div class="wrapper bg-white"><div class="settings-container max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
+  <h2 class="text-3xl font-semibold text-gray-700 mb-6">Settings</h2>
+  <form class="space-y-6">
+    <div>
+      <label for="newUid" class="block text-sm font-medium text-gray-700">Enter New Username:</label>
+      <input type="text" id="newUid" placeholder="New Username" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+    </div>
+    <div>
+      <label for="newPassword" class="block text-sm font-medium text-gray-700">Enter New Password:</label>
+      <input type="password" id="newPassword" placeholder="New Password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+    </div>
+    <div>
+      <label for="profilePicture" class="block text-sm font-medium text-gray-700">Upload Profile Picture:</label>
+      <input type="file" id="profilePicture" accept="image/*" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer focus:outline-none" />
+    </div>
+    <div class="flex justify-end space-x-4">
+      <button type="button" onclick="updateSettings()" class="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Update Settings</button>
+    </div>
+    <p id="settings-message" class="text-red-500 mt-4"></p>
+  </form>
+</div>
+
+<script type="module">
+import { pythonURI, fetchOptions } from '/personal_flocker_frontend/assets/js/api/config.js';
+import { putUpdate, logoutUser } from "/personal_flocker_frontend/assets/js/api/profile.js";
+import { convertToBase64 } from "/personal_flocker_frontend/assets/js/api/posts.js";
+
+window.updateSettings = async function() {
+  const newUid = document.getElementById('newUid').value;
+  const newPassword = document.getElementById('newPassword').value;
+  const fileInput = document.getElementById('profilePicture');
+  const file = fileInput.files[0];
+
+  let settingsUpdated = false;
+
+  if (newUid) {
+    const uidOptions = {
+      URL: pythonURI + "/api/user",
+      body: { uid: newUid },
+      message: 'settings-message',
+      callback: () => {
+        alert("You updated your username, so you will automatically be logged out. Be sure to remember your new username to log in!");
+        window.location.href = 'http://127.0.0.1:4887/personal_flocker_frontend/noauth'; // Updated redirect URL
+      }
+    };
+    try {
+      await putUpdate(uidOptions);
+      localStorage.setItem('username', newUid);
+      settingsUpdated = true;
+    } catch (error) {
+      console.error('Error updating username:', error.message);
+      document.getElementById('settings-message').textContent = 'Error updating username: ' + error.message;
+    }
+  }
+
+  if (newPassword) {
+    const passwordOptions = {
+      URL: pythonURI + "/api/user",
+      body: { password: newPassword },
+      message: 'settings-message',
+      callback: async () => {
+        alert("You updated your password, so you will automatically be logged out. Be sure to remember your new password!");
+        await logoutUser();
+        window.location.href = 'http://127.0.0.1:4887/personal_flocker_frontend/noauth'; // Updated redirect URL
+      }
+    };
+    try {
+      await putUpdate(passwordOptions);
+      settingsUpdated = true;
+    } catch (error) {
+      console.error('Error updating password:', error.message);
+      document.getElementById('settings-message').textContent = 'Error updating password: ' + error.message;
+    }
+  }
+
+  if (file) {
+    try {
+      const base64String = await convertToBase64(file);
+      const options = {
+        URL: pythonURI + "/api/id/pfp",
+        body: { pfp: base64String },
+        message: 'settings-message',
+        callback: () => {
+          console.log('Profile picture uploaded successfully!');
+          document.getElementById('profile-picture').src = `data:image/jpeg;base64,${base64String}`;
+        }
+      };
+      await putUpdate(options);
+      localStorage.setItem('profilePicture', `data:image/jpeg;base64,${base64String}`);
+      settingsUpdated = true;
+    } catch (error) {
+      console.error('Error uploading profile picture:', error.message);
+      document.getElementById('settings-message').textContent = 'Error uploading profile picture: ' + error.message;
+    }
+  }
+
+  if (settingsUpdated) {
+    document.getElementById('settings-message').textContent = 'Settings Saved!';
+    document.getElementById('settings-message').classList.remove('text-red-500');
+    document.getElementById('settings-message').classList.add('text-green-500');
+  }
+}
+</script>
+
+
+
+<script type="module">
+    import {
+        pythonURI,
+        fetchOptions,
+    } from "/personal_flocker_frontend/assets/js/api/config.js";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        getCredentials() // Call the function to get credentials
+            .then((data) => {
+                if (data) {
+                    //IF DATA THEN THE USER IS AUTHENTICATED/LOGGED IN
+                    console.log("LOGGED IN");
+                } else {
+                    //USER IS NOT AUTHENTICATED/LOGGED IN
+                    if (!window.location.href.includes("noauth")) {
+                        window.location.href = "/personal_flocker_frontend/noauth";
+                    }
+                }
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Error fetching credentials: ", err);
+                // Handle any errors that occurred during getCredentials
+            });
+    });
+
+    function getCredentials() {
+        const URL = pythonURI + "/api/user";
+        return fetch(URL, fetchOptions)
+            .then((response) => {
+                // API response handler
+                if (response.status !== 200) {
+                    console.error("HTTP status code: " + response.status);
+                    return null; // prepares to stop the chain by returning null.
+                }
+                return response.json(); // plans to continue the chain with the data.
+            })
+            .then((data) => {
+                // Data handler from the previous promise
+                if (data === null) return null; // stops the chain, returns null.
+                console.log(data); // logs data with should contain uid, name, etc.
+                return data; // returns data to caller
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Fetch error: ", err);
+                return null;
+            });
+    }
+</script>
+</div>
+        </main>
+    </body>
+    <script src="https://cdn.tailwindcss.com"></script>
+</html>
+
+<script>
+    // JavaScript to handle fade-in effect on scroll
+    const fadeInElements = document.querySelectorAll(".fade-in");
+
+    const handleScroll = () => {
+        fadeInElements.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) {
+                el.classList.add("visible");
+            } else {
+                el.classList.remove("visible");
+            }
+        });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("load", handleScroll); // Trigger on page load
+</script>

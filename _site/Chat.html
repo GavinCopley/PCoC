@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang='en'><header
+    class="z-10 sticky justify-items-center w-full top-0 grid grid-cols-5 bg-white justify-center p-4 drop-shadow"
+>
+    <div class="col-span-2 flex gap-x-12 mt-3 justify-self-end" id="link-bar-1">
+        <a
+            href="/personal_flocker_frontend/dream-car"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Dream Car</a
+        >
+        <a
+            href="/personal_flocker_frontend/recommended"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Recommended Cars</a
+        >
+        <a
+            href="/personal_flocker_frontend/allPosts"
+            class="text-sm/6 font-semibold text-gray-900"
+            >All Posts</a
+        >
+        <a
+            href="/personal_flocker_frontend/make_post"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Make Post</a
+        >
+        
+            
+    </div>
+    <div class="p-2" id="home-btn">
+        <a href="/personal_flocker_frontend/" class="text-sm/6 font-bold text-rose-600"
+            ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                width="30"
+                height="30"
+                viewBox="0,0,256,256"
+            >
+                <g
+                    fill="#dc2626"
+                    fill-rule="nonzero"
+                    stroke="none"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="miter"
+                    stroke-miterlimit="10"
+                    stroke-dasharray=""
+                    stroke-dashoffset="0"
+                    font-family="none"
+                    font-weight="none"
+                    font-size="none"
+                    text-anchor="none"
+                    style="mix-blend-mode: normal"
+                >
+                    <g transform="scale(10.66667,10.66667)">
+                        <path
+                            d="M12,2c-0.26712,0.00003 -0.52312,0.10694 -0.71094,0.29688l-10.08594,8.80078c-0.12774,0.09426 -0.20313,0.24359 -0.20312,0.40234c0,0.27614 0.22386,0.5 0.5,0.5h2.5v8c0,0.552 0.448,1 1,1h4c0.552,0 1,-0.448 1,-1v-6h4v6c0,0.552 0.448,1 1,1h4c0.552,0 1,-0.448 1,-1v-8h2.5c0.27614,0 0.5,-0.22386 0.5,-0.5c0.00001,-0.15876 -0.07538,-0.30808 -0.20312,-0.40234l-10.08008,-8.79492c-0.00194,-0.00196 -0.0039,-0.00391 -0.00586,-0.00586c-0.18782,-0.18994 -0.44382,-0.29684 -0.71094,-0.29687z"
+                        ></path>
+                    </g>
+                </g></svg
+        ></a>
+    </div>
+    <div
+        class="col-span-2 flex gap-x-12 mt-3 justify-self-start"
+        id="link-bar-2"
+    >
+        <a
+            href="/personal_flocker_frontend/electric"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Electric</a
+        >
+        <a
+            href="/personal_flocker_frontend/gas"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Gas</a
+        >
+        <a
+            href="/personal_flocker_frontend/garage"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Garage</a
+        >
+        
+           <!-- Help dropdown (hover version) -->
+            <div class="relative group">
+                <a
+                    href="/personal_flocker_frontend/help"
+                    class="text-sm/6 font-semibold text-gray-900"
+                    id="help-button"
+                >Help</a>
+                <div
+                    id="help-dropdown"
+                    class="dropdown-content absolute hidden group-hover:block bg-white shadow-md rounded-lg mt-2 w-40 text-sm font-semibold text-gray-900"
+                >
+                    <a href="/personal_flocker_frontend/terms" class="block px-4 py-2">Terms of Service</a>
+                    <a href="/personal_flocker_frontend/mechanicsTips" class="block px-4 py-2">Car Issues Post Page</a>
+                    <a href="/personal_flocker_frontend/terms" class="block px-4 py-2">Terms of Service</a>
+                </div>
+            </div>
+
+        <a
+            id="signup-login"
+            href="/personal_flocker_frontend/noauth"
+            class="hover:drop-shadow-xl z-10 right-6 absolute text-rose-600 font-extrabold tracking-tight"
+            >Sign Up | Login</a
+        >
+        <a
+            hidden
+            id="profile"
+            href="/personal_flocker_frontend/profile"
+            class="hover:drop-shadow-xl z-10 right-6 absolute text-rose-600 font-extrabold tracking-tight"
+            >Profile</a
+        >
+    </div>
+</header>
+
+<script type="module">
+    import {
+        pythonURI,
+        fetchOptions,
+    } from "/personal_flocker_frontend/assets/js/api/config.js";
+
+    const loginLink = document.getElementById("signup-login");
+    const profileLink = document.getElementById("profile");
+
+    document.addEventListener("DOMContentLoaded", () => {
+        getCredentials() // Call the function to get credentials
+            .then((data) => {
+                if (data) {
+                    //IF DATA THEN THE USER IS AUTHENTICATED/LOGGED IN
+                    console.log("LOGGED IN");
+                    loginLink.hidden = true;
+                    profileLink.hidden = false;
+                } else {
+                    //USER IS NOT AUTHENTICATED/LOGGED IN
+                }
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Error fetching credentials: ", err);
+                // Handle any errors that occurred during getCredentials
+            });
+    });
+    function getCredentials() {
+        const URL = pythonURI + "/api/user";
+        return fetch(URL, fetchOptions)
+            .then((response) => {
+                // API response handler
+                if (response.status !== 200) {
+                    console.error("HTTP status code: " + response.status);
+                    return null; // prepares to stop the chain by returning null.
+                }
+                return response.json(); // plans to continue the chain with the data.
+            })
+            .then((data) => {
+                // Data handler from the previous promise
+                if (data === null) return null; // stops the chain, returns null.
+                return data; // returns data to caller
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Fetch error: ", err);
+                return null;
+            });
+    }
+</script>
+<body>
+        <main class="page-content" aria-label="Content">
+            <div class="wrapper bg-white"><html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        /* Reset some default browser styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Light background color */
+        }
+
+        /* Outer container to center chat content */
+        .chat-container {
+            max-width: 800px;         /* Limit maximum width */
+            margin: 40px auto;        /* Center horizontally, add top/bottom spacing */
+            background-color: #fff;   /* White background */
+            border-radius: 8px;       /* Rounded corners */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;   /* Stack elements vertically */
+            height: 80vh;             /* Occupy 80% of viewport height */
+            overflow: hidden;         /* Hide overflow if needed */
+        }
+
+        /* Scrollable area for chat messages */
+        .chat-box {
+            flex: 1;                  /* Grow to fill space */
+            padding: 20px;            /* Inner spacing */
+            overflow-y: auto;         /* Enable vertical scroll */
+        }
+
+        /* Individual message container */
+        .message-box {
+            position: relative;       /* So we can position edit/delete buttons */
+            margin-bottom: 15px;      /* Space between messages */
+            max-width: 70%;           /* Limit message bubble width */
+            padding: 10px 15px;
+            border-radius: 8px;
+            word-wrap: break-word;     /* Wrap long text */
+        }
+
+        /* Example styling for 'sent' vs 'received' messages */
+        .sent-message {
+            background-color: #e3f2fd; /* Light blue background */
+            margin-left: auto;         /* Push bubble to the right */
+        }
+
+        .received-message {
+            background-color: #f5f5f5; /* Light gray background */
+            margin-right: auto;        /* Push bubble to the left */
+        }
+
+        /* Button container in top-right of each message */
+        .button-container {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Edit/Delete buttons */
+        .edit-button,
+        .delete-button {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 0.85em;
+            padding: 2px 5px;
+            border-radius: 3px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .edit-button:hover,
+        .delete-button:hover {
+            background-color: #e2e6ea;
+            color: #0056b3;
+        }
+
+        /* Footer form for new messages */
+        #chatForm {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+        }
+        #messageInput {
+            flex: 1;                /* Grow to fill space */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-right: 10px;
+            font-size: 1em;
+        }
+        .send-button {
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .send-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox">
+            <!-- Example static messages for demonstration -->
+            <div class="message-box sent-message">
+                <div class="button-container">
+                    <button class="edit-button">Edit</button>
+                    <button class="delete-button">Delete</button>
+                </div>
+                <strong>You</strong><br />
+                Hello!
+            </div>
+            <div class="message-box received-message">
+                <div class="button-container">
+                    <button class="edit-button">Edit</button>
+                    <button class="delete-button">Delete</button>
+                </div>
+                <strong>User123</strong><br />
+                Hi there!
+            </div>
+        </div>
+        <form id="chatForm">
+            <input type="text" id="messageInput" placeholder="Type your message..." required="" />
+            <button type="submit" class="send-button">Send</button>
+        </form>
+    </div>        
+
+    <script type="module">
+        import { getAllChat, postChat, deleteChat, updateChat } from "/personal_flocker_frontend/assets/js/api/carChat.js";
+
+        // Function to create a chat message display with delete and edit buttons
+        function createMessageDisplay(message) {
+            // Container
+            const messageBox = document.createElement("div");
+            messageBox.classList.add("message-box");
+
+            // Decide if it's a "sent" or "received" style
+            // (You could add logic here if you know the current user's ID.)
+            // For now, just use "received-message" by default:
+            messageBox.classList.add("received-message");
+
+            // Content
+            const content = document.createElement("div");
+            content.innerHTML = `<strong>UID: ${message.user_id}</strong><br>${message.message}`;
+            messageBox.appendChild(content);
+
+            // Button container
+            const buttonContainer = document.createElement("div");
+            buttonContainer.className = "button-container";
+
+            // Delete button
+            const deleteButton = document.createElement("button");
+            deleteButton.className = "delete-button";
+            deleteButton.innerHTML = "Delete";
+            deleteButton.addEventListener("click", async () => {
+                const result = await deleteChat(message.id);
+                if (result.success) {
+                    alert("Message deleted successfully!");
+                    messageBox.remove(); // Remove the message box immediately
+                } else {
+                    alert("Failed to delete message.");
+                }
+            });
+            buttonContainer.appendChild(deleteButton);
+
+            // Edit button
+            const editButton = document.createElement("button");
+            editButton.className = "edit-button";
+            editButton.innerHTML = "Edit";
+            editButton.addEventListener("click", () => {
+                const newContent = prompt("Edit your message:", message.message);
+                if (newContent !== null) {
+                    updateChat(message.id, newContent).then(result => {
+                        if (result.success) {
+                            alert("Message updated successfully!");
+                            content.innerHTML = `<strong>UID: ${message.user_id}</strong><br>${newContent}`;
+                        } else {
+                            alert("Failed to update message.");
+                        }
+                    });
+                }
+            });
+            buttonContainer.appendChild(editButton);
+
+            messageBox.appendChild(buttonContainer);
+            return messageBox;
+        }
+
+        // Display all messages
+        async function displayMessages() {
+            const messages = await getAllChat();
+            const chatBox = document.getElementById("chatBox");
+            chatBox.innerHTML = ""; // Clear existing content
+
+            if (messages && messages.length > 0) {
+                messages.forEach(message => {
+                    const newMessageDisplay = createMessageDisplay(message);
+                    chatBox.appendChild(newMessageDisplay);
+                });
+                // Scroll to the bottom of the chat
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } else {
+                chatBox.innerHTML = "<p>No messages available.</p>";
+            }
+        }
+
+        // Submit a new message
+        async function submitMessage() {
+            const messageInput = document.getElementById("messageInput");
+            const messageContent = messageInput.value.trim();
+
+            if (messageContent) {
+                const result = await postChat(messageContent);
+                if (result.success) {
+                    messageInput.value = "";
+                    displayMessages(); // Refresh the messages
+                } else {
+                    console.error('Failed to submit message:', result);
+                    alert("Failed to submit message.");
+                }
+            } else {
+                alert("Message cannot be empty.");
+            }
+        }
+
+        // Event listeners
+        document.addEventListener("DOMContentLoaded", () => {
+            const chatForm = document.getElementById("chatForm");
+            chatForm.addEventListener("submit", async (e) => {
+                e.preventDefault(); // Prevent page refresh
+                await submitMessage();
+            });
+            
+            // Initial display of messages
+            displayMessages();
+        });
+    </script>
+</body>
+</html>
+</div>
+        </main>
+    </body>
+    <script src="https://cdn.tailwindcss.com"></script>
+</html>
+
+<script>
+    // JavaScript to handle fade-in effect on scroll
+    const fadeInElements = document.querySelectorAll(".fade-in");
+
+    const handleScroll = () => {
+        fadeInElements.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) {
+                el.classList.add("visible");
+            } else {
+                el.classList.remove("visible");
+            }
+        });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("load", handleScroll); // Trigger on page load
+</script>

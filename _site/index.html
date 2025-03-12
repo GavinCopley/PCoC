@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang='en'><header
+    class="z-10 sticky justify-items-center w-full top-0 grid grid-cols-5 bg-white justify-center p-4 drop-shadow"
+>
+    <div class="col-span-2 flex gap-x-12 mt-3 justify-self-end" id="link-bar-1">
+        <a
+            href="/personal_flocker_frontend/dream-car"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Dream Car</a
+        >
+        <a
+            href="/personal_flocker_frontend/recommended"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Recommended Cars</a
+        >
+        <a
+            href="/personal_flocker_frontend/allPosts"
+            class="text-sm/6 font-semibold text-gray-900"
+            >All Posts</a
+        >
+        <a
+            href="/personal_flocker_frontend/make_post"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Make Post</a
+        >
+        
+            
+    </div>
+    <div class="p-2" id="home-btn">
+        <a href="/personal_flocker_frontend/" class="text-sm/6 font-bold text-rose-600"
+            ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                width="30"
+                height="30"
+                viewBox="0,0,256,256"
+            >
+                <g
+                    fill="#dc2626"
+                    fill-rule="nonzero"
+                    stroke="none"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="miter"
+                    stroke-miterlimit="10"
+                    stroke-dasharray=""
+                    stroke-dashoffset="0"
+                    font-family="none"
+                    font-weight="none"
+                    font-size="none"
+                    text-anchor="none"
+                    style="mix-blend-mode: normal"
+                >
+                    <g transform="scale(10.66667,10.66667)">
+                        <path
+                            d="M12,2c-0.26712,0.00003 -0.52312,0.10694 -0.71094,0.29688l-10.08594,8.80078c-0.12774,0.09426 -0.20313,0.24359 -0.20312,0.40234c0,0.27614 0.22386,0.5 0.5,0.5h2.5v8c0,0.552 0.448,1 1,1h4c0.552,0 1,-0.448 1,-1v-6h4v6c0,0.552 0.448,1 1,1h4c0.552,0 1,-0.448 1,-1v-8h2.5c0.27614,0 0.5,-0.22386 0.5,-0.5c0.00001,-0.15876 -0.07538,-0.30808 -0.20312,-0.40234l-10.08008,-8.79492c-0.00194,-0.00196 -0.0039,-0.00391 -0.00586,-0.00586c-0.18782,-0.18994 -0.44382,-0.29684 -0.71094,-0.29687z"
+                        ></path>
+                    </g>
+                </g></svg
+        ></a>
+    </div>
+    <div
+        class="col-span-2 flex gap-x-12 mt-3 justify-self-start"
+        id="link-bar-2"
+    >
+        <a
+            href="/personal_flocker_frontend/electric"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Electric</a
+        >
+        <a
+            href="/personal_flocker_frontend/gas"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Gas</a
+        >
+        <a
+            href="/personal_flocker_frontend/garage"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Garage</a
+        >
+        
+           <!-- Help dropdown (hover version) -->
+            <div class="relative group">
+                <a
+                    href="/personal_flocker_frontend/help"
+                    class="text-sm/6 font-semibold text-gray-900"
+                    id="help-button"
+                >Help</a>
+                <div
+                    id="help-dropdown"
+                    class="dropdown-content absolute hidden group-hover:block bg-white shadow-md rounded-lg mt-2 w-40 text-sm font-semibold text-gray-900"
+                >
+                    <a href="/personal_flocker_frontend/terms" class="block px-4 py-2">Terms of Service</a>
+                    <a href="/personal_flocker_frontend/mechanicsTips" class="block px-4 py-2">Car Issues Post Page</a>
+                    <a href="/personal_flocker_frontend/terms" class="block px-4 py-2">Terms of Service</a>
+                </div>
+            </div>
+
+        <a
+            id="signup-login"
+            href="/personal_flocker_frontend/noauth"
+            class="hover:drop-shadow-xl z-10 right-6 absolute text-rose-600 font-extrabold tracking-tight"
+            >Sign Up | Login</a
+        >
+        <a
+            hidden
+            id="profile"
+            href="/personal_flocker_frontend/profile"
+            class="hover:drop-shadow-xl z-10 right-6 absolute text-rose-600 font-extrabold tracking-tight"
+            >Profile</a
+        >
+    </div>
+</header>
+
+<script type="module">
+    import {
+        pythonURI,
+        fetchOptions,
+    } from "/personal_flocker_frontend/assets/js/api/config.js";
+
+    const loginLink = document.getElementById("signup-login");
+    const profileLink = document.getElementById("profile");
+
+    document.addEventListener("DOMContentLoaded", () => {
+        getCredentials() // Call the function to get credentials
+            .then((data) => {
+                if (data) {
+                    //IF DATA THEN THE USER IS AUTHENTICATED/LOGGED IN
+                    console.log("LOGGED IN");
+                    loginLink.hidden = true;
+                    profileLink.hidden = false;
+                } else {
+                    //USER IS NOT AUTHENTICATED/LOGGED IN
+                }
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Error fetching credentials: ", err);
+                // Handle any errors that occurred during getCredentials
+            });
+    });
+    function getCredentials() {
+        const URL = pythonURI + "/api/user";
+        return fetch(URL, fetchOptions)
+            .then((response) => {
+                // API response handler
+                if (response.status !== 200) {
+                    console.error("HTTP status code: " + response.status);
+                    return null; // prepares to stop the chain by returning null.
+                }
+                return response.json(); // plans to continue the chain with the data.
+            })
+            .then((data) => {
+                // Data handler from the previous promise
+                if (data === null) return null; // stops the chain, returns null.
+                return data; // returns data to caller
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Fetch error: ", err);
+                return null;
+            });
+    }
+</script>
+<body>
+        <main class="page-content" aria-label="Content">
+            <div class="wrapper bg-white"><!-- Loading Screen -->
+<div id="loading-screen" class="fixed inset-0 bg-gray-200 flex items-center justify-center z-50">
+    <div class="text-center">
+        <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32 mb-4"></div>
+        <h2 class="text-4xl font-semibold text-gray-900">Loading...</h2>
+    </div>
+</div>
+
+<style>
+    .loader {
+        border-top-color: #3498db;
+        animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const loadingScreen = document.getElementById('loading-screen');
+        window.addEventListener('load', function() {
+            loadingScreen.style.display = 'none';
+        });
+        window.addEventListener('beforeunload', function() {
+            loadingScreen.style.display = 'flex';
+        });
+    });
+</script>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Legendary Motorsport</title>
+    <script src="https://cdn.tailwingidcss.com"></script>
+    <style>
+        /* Fade-in animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+  .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+ /* Gradient Animation */
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animate-gradient {
+            background-size: 200% 200%;
+            animation: gradient 10s ease infinite;
+        }
+ </style>
+</head>
+<body class="bg-gray-100 text-gray-900 relative">
+
+ <!-- Background Animation -->
+<div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div class="bg-gradient-to-r from-gray-900 via-gray-800 to-black w-full h-full opacity-50 animate-gradient"></div>
+    </div>
+
+<!-- Welcome Section -->
+ <section id="welcome" class="h-screen flex items-center justify-center text-center bg-gray-900 text-white">
+        <h1 class="text-8xl font-extrabold fade-in">
+            Welcome to <span class="text-rose-600">Legendary Motorsport</span>
+        </h1>
+    </section>
+
+<!-- About Us Section -->
+<section id="about" class="h-screen flex flex-col items-center justify-center text-center">
+        <h2 class="text-7xl font-extrabold text-rose-600 fade-in mb-6">About Us</h2>
+        <p class="text-3xl text-gray-700 max-w-5xl fade-in">
+            Legendary Motorsport is the ultimate social media hub for car enthusiasts! Whether you're looking to share
+            your experiences, troubleshoot car issues, or showcase stunning photos of your vehicle, our platform is here
+            for you. We aim to connect gearheads, provide solutions, and celebrate the love of cars.
+        </p>
+    </section>
+
+<!-- Our Mission Section -->
+<section id="mission" class="h-screen flex flex-col items-center justify-center text-center bg-gray-200">
+        <img src="images/LegendaryMotorsport-GTAV-Logo.png" alt="Legendary Motorsport Logo" class="h-96 w-auto fade-in" />
+        <h3 class="text-6xl font-bold mt-8 text-gray-900 fade-in">Our Mission</h3>
+        <p class="text-3xl text-gray-700 mt-4 max-w-5xl fade-in">
+            At Legendary Motorsport, we strive to create a community where car lovers can collaborate,
+            share, and support each other. From vintage classics to modern supercars, every car has a story,
+            and we’re here to help you tell yours.
+        </p>
+    </section>
+
+ <!-- Featured Cars Section -->
+ <section id="featured-cars" class="py-20 bg-gray-100">
+        <h2 class="text-7xl font-bold text-center text-red-600 mb-10 fade-in">Featured Cars</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <a href="/personal_flocker_frontend/gas" class="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-500 hover:scale-105">
+                    <img src="images/resized-enshot20240607080120png.png" alt="Gas Car" class="w-full h-64 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-3xl font-bold mb-2">Gas Car</h3>
+                        <p class="text-xl text-gray-700">The timeless classic fueled by gasoline, offering reliability and power.</p>
+                    </div>
+                </a>
+                <a href="/personal_flocker_frontend/electric" class="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-500 hover:scale-105">
+                    <img src="https://blog.vipautoaccessories.com/wp-content/uploads/2024/08/2024_Super-Chrome-Red-Gloss-Wrap_0Hero2.jpg" alt="Electric Car" class="w-full h-64 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-3xl font-bold mb-2">Electric Car</h3>
+                        <p class="text-xl text-gray-700">Maximum efficiency and eco-friendliness, quick acceleration and futuristic design.</p>
+                    </div>
+                </a>
+                <a href="/personal_flocker_frontend/dream-car" class="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-500 hover:scale-105">
+                    <img src="images/964355023c8621887c37e1fcc3c1dc3aa9-koeniggsegg-one1.2x.h473.w710.png" alt="Dream Car" class="w-full h-64 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-3xl font-bold mb-2">Dream Car</h3>
+                        <p class="text-xl text-gray-700">A hypercar designed for the ultimate driving experience.</p>
+                    </div>
+                </a>
+            </div>
+    </section>
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="py-20 bg-gray-900 text-white overflow-hidden">
+    <h2 class="text-7xl font-bold text-center mb-10 fade-in">What Our Users Say</h2>
+    <div class="relative">
+        <div class="flex space-x-8 w-max animate-scroll">
+            <!-- Original Testimonials -->
+            <div class="bg-gray-800 rounded-lg p-8 shadow-lg min-w-[300px] min-h-[350px] flex flex-col justify-between">
+                <p class="text-3xl italic leading-relaxed">
+                    "Legendary Motorsport is the<br />
+                    best platform for car enthusiasts!<br />
+                    I've learned so much<br />
+                    and connected with amazing people."
+                </p>
+                <h3 class="mt-6 font-bold text-xl">- Alex R.</h3>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-8 shadow-lg min-w-[300px] min-h-[350px] flex flex-col justify-between">
+                <p class="text-3xl italic leading-relaxed">
+                    "A fantastic community where<br />
+                    I can share my car photography<br />
+                    and get great feedback."
+                </p>
+                <h3 class="mt-6 font-bold text-xl">- Jamie T.</h3>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-8 shadow-lg min-w-[300px] min-h-[350px] flex flex-col justify-between">
+                <p class="text-3xl italic leading-relaxed">
+                    "The forums have been super helpful<br />
+                    for troubleshooting car problems.<br />
+                    Highly recommended!"
+                </p>
+                <h3 class="mt-6 font-bold text-xl">- Chris M.</h3>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-8 shadow-lg min-w-[300px] min-h-[350px] flex flex-col justify-between">
+                <p class="text-3xl italic leading-relaxed">
+                    "I’ve found my dream car<br />
+                    thanks to the resources<br />
+                    on this platform.<br />
+                    Amazing work!"
+                </p>
+                <h3 class="mt-6 font-bold text-xl">- Taylor L.</h3>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-8 shadow-lg min-w-[300px] min-h-[350px] flex flex-col justify-between">
+                <p class="text-3xl italic leading-relaxed">
+                    "This community has been incredible<br />
+                    for finding advice on car parts."
+                </p>
+                <h3 class="mt-6 font-bold text-xl">- Morgan S.</h3>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-8 shadow-lg min-w-[300px] min-h-[350px] flex flex-col justify-between">
+                <p class="text-3xl italic leading-relaxed">
+                    "Every car lover needs to join<br />
+                    Legendary Motorsport.<br />
+                    It’s a game-changer."
+                </p>
+                <h3 class="mt-6 font-bold text-xl">- Riley D.</h3>
+            </div>
+            <!-- Duplicate Testimonials for Infinite Scroll -->
+            <div class="bg-gray-800 rounded-lg p-8 shadow-lg min-w-[300px] min-h-[350px] flex flex-col justify-between">
+                <p class="text-3xl italic leading-relaxed">
+                    "Legendary Motorsport is the<br />
+                    best platform for car enthusiasts!<br />
+                    I've learned so much<br />
+                    and connected with amazing people."
+                </p>
+                <h3 class="mt-6 font-bold text-xl">- Alex R.</h3>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-8 shadow-lg min-w-[300px] min-h-[350px] flex flex-col justify-between">
+                <p class="text-3xl italic leading-relaxed">
+                    "A fantastic community where<br />
+                    I can share my car photography<br />
+                    and get great feedback."
+                </p>
+                <h3 class="mt-6 font-bold text-xl">- Jamie T.</h3>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-8 shadow-lg min-w-[300px] min-h-[350px] flex flex-col justify-between">
+                <p class="text-3xl italic leading-relaxed">
+                    "The forums have been super helpful<br />
+                    for troubleshooting car problems.<br />
+                    Highly recommended!"
+                </p>
+                <h3 class="mt-6 font-bold text-xl">- Chris M.</h3>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-8 shadow-lg min-w-[300px] min-h-[350px] flex flex-col justify-between">
+                <p class="text-3xl italic leading-relaxed">
+                    "I’ve found my dream car<br />
+                    thanks to the resources<br />
+                    on this platform.<br />
+                    Amazing work!"
+                </p>
+                <h3 class="mt-6 font-bold text-xl">- Taylor L.</h3>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-8 shadow-lg min-w-[300px] min-h-[350px] flex flex-col justify-between">
+                <p class="text-3xl italic leading-relaxed">
+                    "This community has been incredible<br />
+                    for finding advice on car parts."
+                </p>
+                <h3 class="mt-6 font-bold text-xl">- Morgan S.</h3>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-8 shadow-lg min-w-[300px] min-h-[350px] flex flex-col justify-between">
+                <p class="text-3xl italic leading-relaxed">
+                    "Every car lover needs to join<br />
+                    Legendary Motorsport.<br />
+                    It’s a game-changer."
+                </p>
+                <h3 class="mt-6 font-bold text-xl">- Riley D.</h3>
+            </div>
+        </div>
+    </div>
+</section>
+<style>
+    @keyframes scroll {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-50%);
+        }
+    }
+    .animate-scroll {
+        animation: scroll 45s linear infinite;
+    }
+</style>
+
+<!-- Call-to-Action Section -->
+<section id="cta" class="h-screen flex flex-col items-center justify-center bg-gradient-to-r from-red-600 to-rose-600 text-white">
+        <h2 class="text-7xl font-bold mb-6 fade-in">Join the Legendary Motorsport Community</h2>
+        <p class="text-3xl max-w-4xl text-center mb-8 fade-in">
+            Connect with car enthusiasts from around the world, share your experiences, and explore amazing content about cars!
+        </p>
+        <a href="/personal_flocker_frontend/signup" class="bg-white text-red-600 text-3xl px-8 py-4 rounded-lg shadow-lg font-bold transition-transform transform hover:scale-110 fade-in">
+            Get Started Now
+        </a>
+    </section>
+
+ <!-- Footer -->
+<footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto text-center">
+            <p class="text-lg">&copy; 2024 Legendary Motorsport. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="#" class="text-gray-400 hover:text-white mx-2">Facebook</a>
+                <a href="#" class="text-gray-400 hover:text-white mx-2">Twitter</a>
+                <a href="#" class="text-gray-400 hover:text-white mx-2">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+ <!-- JavaScript -->
+
+ <script>
+        // JavaScript to handle fade-in effect on scroll
+        const fadeInElements = document.querySelectorAll('.fade-in');
+
+        const handleScroll = () => {
+            fadeInElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) {
+                    el.classList.add('visible');
+                } else {
+                    el.classList.remove('visible');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('load', handleScroll); // Trigger on page load
+    </script>
+</body>
+<p>&lt;/html&gt;</p>
+</div>
+        </main>
+    </body>
+    <script src="https://cdn.tailwindcss.com"></script>
+</html>
+
+<script>
+    // JavaScript to handle fade-in effect on scroll
+    const fadeInElements = document.querySelectorAll(".fade-in");
+
+    const handleScroll = () => {
+        fadeInElements.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) {
+                el.classList.add("visible");
+            } else {
+                el.classList.remove("visible");
+            }
+        });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("load", handleScroll); // Trigger on page load
+</script>

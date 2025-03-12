@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang='en'><header
+    class="z-10 sticky justify-items-center w-full top-0 grid grid-cols-5 bg-white justify-center p-4 drop-shadow"
+>
+    <div class="col-span-2 flex gap-x-12 mt-3 justify-self-end" id="link-bar-1">
+        <a
+            href="/personal_flocker_frontend/dream-car"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Dream Car</a
+        >
+        <a
+            href="/personal_flocker_frontend/recommended"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Recommended Cars</a
+        >
+        <a
+            href="/personal_flocker_frontend/allPosts"
+            class="text-sm/6 font-semibold text-gray-900"
+            >All Posts</a
+        >
+        <a
+            href="/personal_flocker_frontend/make_post"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Make Post</a
+        >
+        
+            
+    </div>
+    <div class="p-2" id="home-btn">
+        <a href="/personal_flocker_frontend/" class="text-sm/6 font-bold text-rose-600"
+            ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                width="30"
+                height="30"
+                viewBox="0,0,256,256"
+            >
+                <g
+                    fill="#dc2626"
+                    fill-rule="nonzero"
+                    stroke="none"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="miter"
+                    stroke-miterlimit="10"
+                    stroke-dasharray=""
+                    stroke-dashoffset="0"
+                    font-family="none"
+                    font-weight="none"
+                    font-size="none"
+                    text-anchor="none"
+                    style="mix-blend-mode: normal"
+                >
+                    <g transform="scale(10.66667,10.66667)">
+                        <path
+                            d="M12,2c-0.26712,0.00003 -0.52312,0.10694 -0.71094,0.29688l-10.08594,8.80078c-0.12774,0.09426 -0.20313,0.24359 -0.20312,0.40234c0,0.27614 0.22386,0.5 0.5,0.5h2.5v8c0,0.552 0.448,1 1,1h4c0.552,0 1,-0.448 1,-1v-6h4v6c0,0.552 0.448,1 1,1h4c0.552,0 1,-0.448 1,-1v-8h2.5c0.27614,0 0.5,-0.22386 0.5,-0.5c0.00001,-0.15876 -0.07538,-0.30808 -0.20312,-0.40234l-10.08008,-8.79492c-0.00194,-0.00196 -0.0039,-0.00391 -0.00586,-0.00586c-0.18782,-0.18994 -0.44382,-0.29684 -0.71094,-0.29687z"
+                        ></path>
+                    </g>
+                </g></svg
+        ></a>
+    </div>
+    <div
+        class="col-span-2 flex gap-x-12 mt-3 justify-self-start"
+        id="link-bar-2"
+    >
+        <a
+            href="/personal_flocker_frontend/electric"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Electric</a
+        >
+        <a
+            href="/personal_flocker_frontend/gas"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Gas</a
+        >
+        <a
+            href="/personal_flocker_frontend/garage"
+            class="text-sm/6 font-semibold text-gray-900"
+            >Garage</a
+        >
+        
+           <!-- Help dropdown (hover version) -->
+            <div class="relative group">
+                <a
+                    href="/personal_flocker_frontend/help"
+                    class="text-sm/6 font-semibold text-gray-900"
+                    id="help-button"
+                >Help</a>
+                <div
+                    id="help-dropdown"
+                    class="dropdown-content absolute hidden group-hover:block bg-white shadow-md rounded-lg mt-2 w-40 text-sm font-semibold text-gray-900"
+                >
+                    <a href="/personal_flocker_frontend/terms" class="block px-4 py-2">Terms of Service</a>
+                    <a href="/personal_flocker_frontend/mechanicsTips" class="block px-4 py-2">Car Issues Post Page</a>
+                    <a href="/personal_flocker_frontend/terms" class="block px-4 py-2">Terms of Service</a>
+                </div>
+            </div>
+
+        <a
+            id="signup-login"
+            href="/personal_flocker_frontend/noauth"
+            class="hover:drop-shadow-xl z-10 right-6 absolute text-rose-600 font-extrabold tracking-tight"
+            >Sign Up | Login</a
+        >
+        <a
+            hidden
+            id="profile"
+            href="/personal_flocker_frontend/profile"
+            class="hover:drop-shadow-xl z-10 right-6 absolute text-rose-600 font-extrabold tracking-tight"
+            >Profile</a
+        >
+    </div>
+</header>
+
+<script type="module">
+    import {
+        pythonURI,
+        fetchOptions,
+    } from "/personal_flocker_frontend/assets/js/api/config.js";
+
+    const loginLink = document.getElementById("signup-login");
+    const profileLink = document.getElementById("profile");
+
+    document.addEventListener("DOMContentLoaded", () => {
+        getCredentials() // Call the function to get credentials
+            .then((data) => {
+                if (data) {
+                    //IF DATA THEN THE USER IS AUTHENTICATED/LOGGED IN
+                    console.log("LOGGED IN");
+                    loginLink.hidden = true;
+                    profileLink.hidden = false;
+                } else {
+                    //USER IS NOT AUTHENTICATED/LOGGED IN
+                }
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Error fetching credentials: ", err);
+                // Handle any errors that occurred during getCredentials
+            });
+    });
+    function getCredentials() {
+        const URL = pythonURI + "/api/user";
+        return fetch(URL, fetchOptions)
+            .then((response) => {
+                // API response handler
+                if (response.status !== 200) {
+                    console.error("HTTP status code: " + response.status);
+                    return null; // prepares to stop the chain by returning null.
+                }
+                return response.json(); // plans to continue the chain with the data.
+            })
+            .then((data) => {
+                // Data handler from the previous promise
+                if (data === null) return null; // stops the chain, returns null.
+                return data; // returns data to caller
+            })
+            .catch((err) => {
+                // General error handler
+                console.error("Fetch error: ", err);
+                return null;
+            });
+    }
+</script>
+<body>
+        <main class="page-content" aria-label="Content">
+            <div class="wrapper bg-white"><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">History of Posts</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="" itemprop="datePublished">
+        
+      </time>• <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span>
+    </p>
+
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody"><style>
+    .container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        max-width: 1200px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .data {
+        display: flex;
+        align-items: flex-start;
+        max-width: 800px;
+        width: 100%;
+        background-color: #2c3e50;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .left-side {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-right: 20px;
+    }
+    .details {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .post-item {
+        background-color: #34495e;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        color: #ecf0f1;
+    }
+    .post-item h3 {
+        margin: 0 0 5px 0;
+    }
+    .post-item p {
+        margin: 0;
+    }
+</style>
+
+<!-- Analytics Page -->
+<div class="container">
+    <div id="data" class="data">
+        <div class="left-side">
+            <p id="count"></p>
+        </div>
+        <div class="details" id="details">
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { pythonURI, fetchOptions } from '/personal_flocker_frontend/assets/js/api/config.js';
+
+    // URLs to fetch profile links, user data, and commits
+    const postApiUrl = `${pythonURI}/api/posts`;
+
+    async function fetchData() {
+        try {
+            // Define the fetch requests
+            const postApiRequest = fetch(postApiUrl, fetchOptions);
+
+            // Run all fetch requests concurrently
+            const [postApiResponse] = await Promise.all([
+                postApiRequest
+            ]);
+
+            // Check for errors in the responses
+            if (!postApiResponse.ok) {
+                throw new Error('Failed to fetch post API links: ' + postApiResponse.statusText);
+            }
+
+            // Parse the JSON data
+            const postData = await postApiResponse.json();
+
+            // Extract commits count
+            const postCount = postData.length || 0;
+
+            // Update the HTML elements with the data
+            document.getElementById('count').innerHTML = `<h2>Count ${postCount}</h2>`;
+
+            // Get the details div
+            const detailsDiv = document.getElementById('details');
+
+            // Iterate over the postData and create HTML elements for each item
+            postData.forEach(postItem => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post-item';
+                postElement.innerHTML = `
+                    <h3>${postItem.title}</h3>
+                    <p><strong>Channel:</strong> ${postItem.channel_name}</p>
+                    <p><strong>User:</strong> ${postItem.user_name}</p>
+                    <p>${postItem.comment}</p>
+                `;
+                detailsDiv.appendChild(postElement);
+            });
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    // Call the fetchData function to initiate the requests
+    fetchData();
+</script>
+
+
+  </div><a class="u-url" href="/personal_flocker_frontend/history" hidden></a>
+</article>
+</div>
+        </main>
+    </body>
+    <script src="https://cdn.tailwindcss.com"></script>
+</html>
+
+<script>
+    // JavaScript to handle fade-in effect on scroll
+    const fadeInElements = document.querySelectorAll(".fade-in");
+
+    const handleScroll = () => {
+        fadeInElements.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) {
+                el.classList.add("visible");
+            } else {
+                el.classList.remove("visible");
+            }
+        });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("load", handleScroll); // Trigger on page load
+</script>

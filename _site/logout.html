@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang='en'><body>
+        <main class="page-content" aria-label="Content">
+            <div class="wrapper bg-white"><script type="module">
+    import { fetchOptions, pythonURI } from '/personal_flocker_frontend/assets/js/api/config.js';
+    const URL = pythonURI + '/api/authenticate'; // Assuming pythonURI is defined elsewhere
+    const options = {
+        ...fetchOptions, // Assuming fetchOptions is defined elsewhere and includes necessary headers, etc.
+        method: 'DELETE',
+    };
+    console.log('Logout clicked');
+
+    fetch(URL, options)
+        .then(response => {
+            if (response.ok) {
+                window.location.href = "/personal_flocker_frontend/login"; // Reverted redirect URL
+                // Successfully called the logout endpoint, now redirect to the current page
+            } else {
+                // Handle response not ok (e.g., display an error message)
+                console.error('Logout failed:', response.statusText);
+            }
+        })
+        .catch(error => {
+            // Handle any errors that occurred during the fetch
+            console.error('Error during logout:', error);
+        });
+
+</script>
+
+</div>
+        </main>
+    </body>
+    <script src="https://cdn.tailwindcss.com"></script>
+</html>
+
+<script>
+    // JavaScript to handle fade-in effect on scroll
+    const fadeInElements = document.querySelectorAll(".fade-in");
+
+    const handleScroll = () => {
+        fadeInElements.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) {
+                el.classList.add("visible");
+            } else {
+                el.classList.remove("visible");
+            }
+        });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("load", handleScroll); // Trigger on page load
+</script>
